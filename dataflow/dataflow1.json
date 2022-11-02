@@ -1,0 +1,78 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "source",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "mapping"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {_Col0_} as string,",
+				"          {_Col1_} as string,",
+				"          {_Col2_} as string,",
+				"          {_Col3_} as string,",
+				"          {_Col4_} as integer,",
+				"          {_Col5_} as integer,",
+				"          {_Col6_} as string,",
+				"          {_Col7_} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 select(mapColumn(",
+				"          Region = {_Col0_},",
+				"          Country = {_Col1_},",
+				"          Product_Category = {_Col2_},",
+				"          Campaign_Name = {_Col3_},",
+				"          Revenue = {_Col4_},",
+				"          Revenue_Target = {_Col5_},",
+				"          City = {_Col6_},",
+				"          State = {_Col7_}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> mapping",
+				"mapping sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Region as string,",
+				"          Country as string,",
+				"          ProductCategory as string,",
+				"          CampaignName as string,",
+				"          Revenue as decimal(10,2),",
+				"          RevenueTarget as decimal(10,2),",
+				"          City as string,",
+				"          State as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}
